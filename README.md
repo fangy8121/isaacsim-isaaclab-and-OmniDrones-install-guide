@@ -1,5 +1,4 @@
-# isaacsim-isaaclab-and-OmniDrones-install-guide
-# Isaac Sim / Isaac Lab / OmniDrones / LiDAR 安装记录
+# isaacsim/isaaclab and OmniDrones install guide
 
 本文记录 Isaac Sim、Isaac Lab、OmniDrones 以及 LiDAR 模块的安装过程。Isaac Sim 和 Isaac Lab 的安装主要参考 Isaac Lab v2.3.0 官方 pip 安装文档；OmniDrones 使用兼容 Isaac Sim 5.1.0 的 [ChanJoon/OmniDrones](https://github.com/ChanJoon/OmniDrones)；LiDAR 后续使用 [aCodeDog/OmniPerception](https://github.com/aCodeDog/OmniPerception)。
 
