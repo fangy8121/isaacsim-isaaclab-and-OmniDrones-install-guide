@@ -8,7 +8,6 @@
 - OmniDrones 官方安装文档：<https://omnidrones.readthedocs.io/en/latest/installation.html>
 - ChanJoon/OmniDrones：<https://github.com/ChanJoon/OmniDrones>
 - aCodeDog/OmniPerception：<https://github.com/aCodeDog/OmniPerception>
-- OmniPerception Issue #29：<https://github.com/aCodeDog/OmniPerception/issues/29>
 
 ## 版本组合
 
