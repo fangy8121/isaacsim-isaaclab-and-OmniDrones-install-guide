@@ -1,4 +1,4 @@
-# Isaac Sim / Isaac Lab / OmniDrones 安装记录
+# Isaac Sim / Isaac Lab / OmniDrones / OmniPerception 安装记录
 
 本文记录 Isaac Sim、Isaac Lab、OmniDrones 以及 LiDAR 模块的安装过程。Isaac Sim 和 Isaac Lab 的安装主要参考 Isaac Lab v2.3.0 官方 pip 安装文档；OmniDrones 使用兼容 Isaac Sim 5.1.0 的 [ChanJoon/OmniDrones](https://github.com/ChanJoon/OmniDrones)；LiDAR 后续使用 [aCodeDog/OmniPerception](https://github.com/aCodeDog/OmniPerception)。
 
@@ -66,33 +66,18 @@ isaacsim isaacsim.exp.full.kit
 
 ## 3. 安装 Isaac Lab
 
-克隆 Isaac Lab：
+克隆 Isaac Lab，并进入仓库查看 helper script：
 
 ```bash
 git clone https://github.com/isaac-sim/IsaacLab.git
-```
-
-进入 Isaac Lab 仓库：
-
-```bash
 cd IsaacLab
-```
-
-查看 helper script：
-
-```bash
 ./isaaclab.sh --help
 ```
 
-安装 Linux 依赖：
+安装 Linux 依赖并安装 Isaac Lab：
 
 ```bash
 sudo apt install cmake build-essential
-```
-
-安装 Isaac Lab：
-
-```bash
 ./isaaclab.sh --install
 ```
 
@@ -106,11 +91,7 @@ sudo apt install cmake build-essential
 
 ```bash
 ./isaaclab.sh -p scripts/tutorials/00_sim/create_empty.py
-```
-
-也可以直接使用当前 Python 环境运行：
-
-```bash
+# 或者直接使用当前 Python 环境运行
 python scripts/tutorials/00_sim/create_empty.py
 ```
 
@@ -131,16 +112,41 @@ git clone https://github.com/ChanJoon/OmniDrones.git
 cd OmniDrones
 ```
 
-安装：
+直接执行 `pip install -e .` 时，pip 可能会根据 `setup.py` 中的依赖范围自动升级部分包，从而出现版本不兼容问题。下面先按已验证成功的环境固定关键依赖版本：
 
 ```bash
-pip install -e .
+pip install \
+  hydra-core==1.3.2 \
+  omegaconf==2.3.0 \
+  wandb==0.25.1 \
+  PyYAML==6.0.2 \
+  numpy==1.26.0 \
+  scipy==1.15.3 \
+  tqdm==4.67.3 \
+  einops==0.8.2 \
+  pandas==3.0.1 \
+  imageio==2.37.0 \
+  moviepy==2.2.1 \
+  av==17.0.0 \
+  plotly==6.6.0 \
+  tensordict==0.10.0 \
+  torchrl==0.10.0 \
+  gym==0.23.1 \
+  gymnasium==1.2.0 \
+  rl-games==1.6.1
+```
+
+然后安装 OmniDrones。本步骤使用 `--no-deps`，避免 pip 再次自动修改上面已经固定好的依赖版本：
+
+```bash
+pip install -e . --no-deps
 ```
 
 验证安装：
 
 ```bash
-python -c "import omni_drones; print('OmniDrones installed successfully')"
+cd scripts
+python train.py algo=ppo headless=true wandb.entity=YOUR_WANDB_ENTITY
 ```
 
 ## 5. 安装 LiDAR：OmniPerception
@@ -175,5 +181,6 @@ python -c "import LidarSensor; print('LidarSensor installed successfully')"
 
 注意：OmniPerception README 中写到 Isaac Sim 支持范围为 `<= 4.5`，并提示 Isaac Sim 5.0 暂不支持。同时，Issue #29 中有人反馈不同 Isaac Sim 版本下 LiDAR 表现可能不一致，例如 Isaac Sim 4.5 表现正常，而 Isaac Sim 5.0 中运动物体场景下 LiDAR 可能失效。因此如果在 Isaac Sim 5.1.0 环境中使用 OmniPerception，需要额外验证 LiDAR 在目标任务中的实际效果。
 
+## 6. 其他问题
 
-
+如果安装过程中遇到其他问题，请优先查看上方列出的源文档和对应 GitHub Issue。
