@@ -67,9 +67,9 @@ isaacsim isaacsim.exp.full.kit
 ## 3. 安装 Isaac Lab
 
 克隆 Isaac Lab，并进入仓库查看 helper script：
-
+此处需要把版本固定为 v2.3.0，避免现在 GitHub 的 main 将来变成其他版本：
 ```bash
-git clone https://github.com/isaac-sim/IsaacLab.git
+git clone --branch v2.3.0 https://github.com/isaac-sim/IsaacLab.git
 cd IsaacLab
 ./isaaclab.sh --help
 ```
