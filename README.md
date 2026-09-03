@@ -4,7 +4,7 @@
 
 ## 参考资料
 
-- Isaac Lab v2.3.0 pip 安装文档：<https://isaac-sim.github.io/IsaacLab/v2.3.0/source/setup/installation/pip_installation.html>
+- Isaac Lab v2.3.2 pip 安装文档：<https://isaac-sim.github.io/IsaacLab/v2.3.2/source/setup/installation/pip_installation.html>
 - OmniDrones 官方安装文档：<https://omnidrones.readthedocs.io/en/latest/installation.html>
 - ChanJoon/OmniDrones：<https://github.com/ChanJoon/OmniDrones>
 - aCodeDog/OmniPerception：<https://github.com/aCodeDog/OmniPerception>
@@ -15,7 +15,7 @@
 | --- | --- |
 | Python | 3.11 |
 | Isaac Sim | 5.1.0 |
-| Isaac Lab | v2.3.0 |
+| Isaac Lab | v2.3.2 |
 | PyTorch | 2.7.0 + cu128 |
 | torchvision | 0.22.0 |
 | OmniDrones | ChanJoon/OmniDrones |
@@ -67,9 +67,9 @@ isaacsim isaacsim.exp.full.kit
 ## 3. 安装 Isaac Lab
 
 克隆 Isaac Lab，并进入仓库查看 helper script\
-此处需要把版本固定为 v2.3.0，避免现在 GitHub 的 main 将来变成其他版本：
+此处需要把版本固定为 v2.3.2，避免现在 GitHub 的 main 将来变成其他版本：
 ```bash
-git clone --branch v2.3.0 https://github.com/isaac-sim/IsaacLab.git
+git clone --branch v2.3.2 https://github.com/isaac-sim/IsaacLab.git
 cd IsaacLab
 ./isaaclab.sh --help
 ```
@@ -81,10 +81,10 @@ sudo apt install cmake build-essential
 ./isaaclab.sh --install
 ```
 
-如果只想安装某个学习框架，例如 `rl_games`：
+（建议）如果只想安装某个学习框架，例如 `rsl_rl`：
 
 ```bash
-./isaaclab.sh --install rl_games
+./isaaclab.sh --install rsl_rl
 ```
 
 验证 Isaac Lab：
@@ -116,24 +116,10 @@ cd OmniDrones
 
 ```bash
 pip install \
-  hydra-core==1.3.2 \
-  omegaconf==2.3.0 \
-  wandb==0.25.1 \
-  PyYAML==6.0.2 \
-  numpy==1.26.0 \
-  scipy==1.15.3 \
-  tqdm==4.67.3 \
-  einops==0.8.2 \
-  pandas==3.0.1 \
-  imageio==2.37.0 \
-  moviepy==2.2.1 \
-  av==17.0.0 \
-  plotly==6.6.0 \
-  tensordict==0.10.0 \
-  torchrl==0.10.0 \
-  gym==0.23.1 \
-  gymnasium==1.2.0 \
-  rl-games==1.6.1
+    tensordict==0.10.0 \
+    torchrl==0.10.0
+
+pip install --force-reinstall --no-deps packaging==23.0
 ```
 
 然后安装 OmniDrones。本步骤使用 `--no-deps`，避免 pip 再次自动修改上面已经固定好的依赖版本：
@@ -142,11 +128,56 @@ pip install \
 pip install -e . --no-deps
 ```
 
-验证安装：
+（建议）验证安装，运行一个较小的 Hover + PPO 测试：
 
 ```bash
-cd scripts
-python train.py algo=ppo headless=true wandb.entity=YOUR_WANDB_ENTITY
+cd ~/OmniDrones/scripts
+python train.py \
+    task=Hover \
+    algo=ppo \
+    headless=true \
+    task.env.num_envs=8 \
+    wandb.mode=disabled \
+    total_frames=10000
+```
+或者直接按照原文测试：
+
+```bash
+python train.py algo=ppo headless=true wandb.mode=disabled
+```
+如果 PPO 可以正常训练，但训练结束出现：
+
+```bash
+IndexError: too many indices for array:
+array is 1-dimensional, but 3 were indexed
+```
+则修改~/OmniDrones/omni_drones/envs/isaac_env.py：
+
+```bash
+rgb_data = self._rgb_annotator.get_data()
+rgb_data = np.frombuffer(rgb_data, dtype=np.uint8).reshape(*rgb_data.shape)
+return rgb_data[:, :, :3]
+```
+改为：
+
+```bash
+rgb_data = self._rgb_annotator.get_data()
+
+if rgb_data is None:
+    width, height = self.cfg.viewer.resolution
+    return np.zeros((height, width, 3), dtype=np.uint8)
+
+rgb_array = np.asarray(rgb_data)
+
+if rgb_array.size == 0 or rgb_array.ndim < 3:
+    width, height = self.cfg.viewer.resolution
+    return np.zeros((height, width, 3), dtype=np.uint8)
+
+rgb_data = np.frombuffer(
+    rgb_data, dtype=np.uint8
+).reshape(*rgb_data.shape)
+
+return rgb_data[:, :, :3]
 ```
 
 ## 5. 安装 LiDAR：OmniPerception
