@@ -183,32 +183,34 @@ return rgb_data[:, :, :3]
 ## 5. 安装 LiDAR：OmniPerception
 
 LiDAR 后续使用 [aCodeDog/OmniPerception](https://github.com/aCodeDog/OmniPerception)。该项目提供 `LidarSensor` 模块，支持 Livox、Velodyne、Ouster 等多种 LiDAR pattern，并包含 IsaacLab / Isaac Sim 等平台的集成说明。
-
-安装依赖：
-
-```bash
-pip install warp-lang[extras] taichi
-```
-
-下载源码：
+可以使用原文安装，但是我更推荐使用本文的方式：
+1. 下载 OmniPerception：
 
 ```bash
+cd ~
 git clone https://github.com/aCodeDog/OmniPerception.git
-cd OmniPerception
+cd ~/OmniPerception
 ```
-
-安装 `LidarSensor`：
+2. 安装 LidarSensor：
 
 ```bash
-cd LidarSensor
-pip install -e .
+conda activate env_isaaclab
+cd ~/OmniPerception/LidarSensor
+pip install -e . --no-deps
 ```
-
-验证安装：
+3. 集成到 Isaac Lab：
 
 ```bash
-python -c "import LidarSensor; print('LidarSensor installed successfully')"
+cd ~/OmniPerception/LidarSensor/LidarSensor/example/isaaclab/isaaclab
+./install_lidar_sensor.sh ~/IsaacLab
 ```
+4. 测试 OmniPerception：
+
+```bash
+cd ~/IsaacLab
+./isaaclab.sh -p scripts/demos/simple_lidar_integration.py
+```
+如果 Isaac Sim 可以正常启动，并且场景中可以看到 LiDAR 扫描点云，说明 OmniPerception 已经成功安装。
 
 注意：OmniPerception README 中写到 Isaac Sim 支持范围为 `<= 4.5`，并提示 Isaac Sim 5.0 暂不支持。同时，Issue #29 中有人反馈不同 Isaac Sim 版本下 LiDAR 表现可能不一致，例如 Isaac Sim 4.5 表现正常，而 Isaac Sim 5.0 中运动物体场景下 LiDAR 可能失效。因此如果在 Isaac Sim 5.1.0 环境中使用 OmniPerception，需要额外验证 LiDAR 在目标任务中的实际效果。
 
