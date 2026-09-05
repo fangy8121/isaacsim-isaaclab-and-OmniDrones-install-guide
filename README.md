@@ -141,6 +141,16 @@ pip install --force-reinstall --no-deps packaging==23.0
 ```bash
 pip install -e . --no-deps
 ```
+由于使用 --no-deps，需要手动安装 OmniDrones 运行所需的 Python 包：
+
+```bash
+pip install \
+    wandb==0.15.12 \
+    pandas \
+    plotly \
+    av
+```
+其中 wandb 需要固定为 0.15.12，否则新版 wandb 与 OmniDrones 部分代码存在兼容性问题。
 
 （建议）验证安装，运行一个较小的 Hover + PPO 测试：
 
