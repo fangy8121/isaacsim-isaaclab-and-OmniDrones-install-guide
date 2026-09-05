@@ -110,7 +110,11 @@ python scripts/tutorials/00_sim/create_empty.py
 ```bash
 ./isaaclab.sh -p scripts/reinforcement_learning/rsl_rl/train.py --task=Isaac-Ant-v0 --headless
 ```
-
+查看结果：
+```bash
+./isaaclab.sh -p scripts/reinforcement_learning/rsl_rl/play.py \
+--task=Isaac-Ant-v0
+```
 ## 4. 安装 OmniDrones
 
 OmniDrones 官方文档中的部分流程仍围绕旧版本 Isaac Sim / Isaac Lab 展开，并且 `conda_setup` 在 Isaac Sim 5.1.0 环境中可能不适配。因此这里使用 [ChanJoon/OmniDrones](https://github.com/ChanJoon/OmniDrones)，该 fork 已更新到 Isaac Sim 5.1.0 和 Isaac Lab v2.3.x。
