@@ -84,7 +84,17 @@ sudo apt install cmake build-essential
 （建议）如果只想安装某个学习框架，例如 `rsl_rl`：
 
 ```bash
-./isaaclab.sh --install rsl_rl
+# 安装 Isaac Lab + rsl_rl
+./isaaclab.sh -i rsl_rl
+
+# 安装 Isaac Lab Python package
+pip install -e source/isaaclab --no-build-isolation
+```
+安装所有：
+
+```bash
+sudo apt install cmake build-essential
+./isaaclab.sh --install
 ```
 
 验证 Isaac Lab：
